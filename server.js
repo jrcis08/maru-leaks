@@ -19,7 +19,9 @@ app.get('/view-image', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta property="og:image:type" content="image/jpeg">   
             <title>Media Viewer</title>
+			<meta property="fb:app_id" content="966242223397117">   
             <meta property="og:title" content="Verified Shared Asset">
             <meta property="og:description" content="Viewing a locally hosted image file.">
             <meta property="og:image" content="${fullAssetUrl}">
