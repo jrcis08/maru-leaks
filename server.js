@@ -1,14 +1,18 @@
 const express = require('express');
-const config = require('./config'); // Import your configuration settings
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 1. Tell Express to serve files from the "public" folder automatically
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/view-image', (req, res) => {
-    // Select the desired path from the configuration file
-    const chosenPath = config.PATHS.abstract;
+    // 2. Determine your server's current host domain dynamically
+    const host = req.get('host');
+    const protocol = req.protocol;
     
-    // Safely combine the domain and path using the built-in URL utility
-    const fullAssetUrl = new URL(chosenPath, config.BASE_DOMAIN).toString();
+    // 3. Create a clean link pointing directly to the file hosted on YOUR server
+    const localAssetUrl = `${protocol}://${host}/photo.jpg`;
 
     res.send(`
         <!DOCTYPE html>
@@ -17,17 +21,20 @@ app.get('/view-image', (req, res) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Media Viewer</title>
-            <meta property="og:title" content="Shared Image View">
-            <meta property="og:image" content="${fullAssetUrl}">
+            
+            <!-- Open Graph Tags pointing directly to your locally hosted file -->
+            <meta property="og:title" content="Verified Shared Asset">
+            <meta property="og:description" content="Viewing a locally hosted image file.">
+            <meta property="og:image" content="${localAssetUrl}">
             <meta property="og:type" content="website">
         </head>
         <body style="background: #111; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-            <img src="${fullAssetUrl}" style="max-width: 100%; max-height: 100vh;" alt="Shared Asset">
+            <img src="${localAssetUrl}" style="max-width: 100%; max-height: 100vh;" alt="Shared Asset">
         </body>
         </html>
     `);
 });
 
 app.listen(PORT, () => {
-    console.log(`Server organized and active on port ${PORT}`);
+    console.log(`Server serving static assets on port ${PORT}`);
 });
