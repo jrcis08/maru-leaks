@@ -1,33 +1,22 @@
 const express = require('express');
-const config = require('./config');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', true);
 
-app.get('/view-image', (req, res) => {
+app.use(express.static('public'));
+
+app.get('/image-proxy', (req, res) => {
     console.log('Client IP:', req.ip);
 
-    const chosenPath = config.PATHS.abstract;
-    const fullAssetUrl = new URL(chosenPath, config.BASE_DOMAIN).toString();
+    const imageUrl = req.query.url;
+    if (!imageUrl) {
+        return res.status(400).json({ error: 'Missing URL' });
+    }
 
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Media Viewer</title>
-            <meta property="og:title" content="Verified Shared Asset">
-            <meta property="og:description" content="Viewing a locally hosted image file.">
-            <meta property="og:image" content="${fullAssetUrl}">
-            <meta property="og:type" content="website">
-        </head>
-        <body style="background: #111; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-            <img src="${fullAssetUrl}" style="max-width: 100%; max-height: 100vh;" alt="Shared Asset">
-        </body>
-        </html>
-    `);
+    const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl)}`;
+    res.redirect(proxyUrl);
 });
 
 app.listen(PORT, () => {
