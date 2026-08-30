@@ -3,15 +3,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 1. Tell Express to serve files from the "public" folder automatically
+// Trust the proxy (required for Render/Cloudflare)
+app.set('trust proxy', true);
+
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/view-image', (req, res) => {
-    // 2. Determine your server's current host domain dynamically
+    const clientIp = req.ip;
+    console.log('Client IP:', clientIp);
+
     const host = req.get('host');
     const protocol = req.protocol;
-    
-    // 3. Create a clean link pointing directly to the file hosted on YOUR server
     const localAssetUrl = `${protocol}://${host}/photo.jpg`;
 
     res.send(`
@@ -21,8 +24,6 @@ app.get('/view-image', (req, res) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Media Viewer</title>
-            
-            <!-- Open Graph Tags pointing directly to your locally hosted file -->
             <meta property="og:title" content="Verified Shared Asset">
             <meta property="og:description" content="Viewing a locally hosted image file.">
             <meta property="og:image" content="${localAssetUrl}">
@@ -37,4 +38,4 @@ app.get('/view-image', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server serving static assets on port ${PORT}`);
-});
+});   
