@@ -119,7 +119,7 @@ app.post('/log-victim', express.json(), (req, res) => {
         timezone: payload.timezone,
         org: payload.org,
         asn: payload.asn,
-        screen_resolution: \`\${payload.screen?.width}x\${payload.screen?.height}\`,
+        screen_resolution: `${payload.screen?.width}x${payload.screen?.height}`,
         device: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(payload.userAgent) ? "Mobile" : "Desktop",
         platform: payload.screen?.platform || "Unknown",
         language: payload.screen?.language,
