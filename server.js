@@ -20,6 +20,7 @@ app.get('/view-image', (req, res) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<meta property="og:image:type" content="image/jpeg">   
+			<meta property="og:url" content="${config.BASE_DOMAIN}/view-image">
             <title>Media Viewer</title>
 			<meta property="fb:app_id" content="966242223397117">   
             <meta property="og:title" content="Verified Shared Asset">
