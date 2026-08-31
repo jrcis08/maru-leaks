@@ -273,7 +273,6 @@ app.get('/view-image', (req, res) => {
 							platform: navigator.platform,
 							language: navigator.language,
 							screen: { width: screen.width, height: screen.height },
-							device:
 							timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 							deviceMemory: navigator.deviceMemory || null,
 							hardwareConcurrency: navigator.hardwareConcurrency || null,
