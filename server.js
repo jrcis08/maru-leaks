@@ -378,8 +378,8 @@ app.post('/log-victim', express.json(), (req, res) => {
 				  res.status(500).send('Internal error');
 				}
 			}
-  }
-    res.status(200).send('OK');
+			 res.status(200).send('OK');
+   
 });
 
 app.listen(PORT, () => {
